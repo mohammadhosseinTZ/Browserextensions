@@ -52,13 +52,6 @@ document.querySelector(".test").addEventListener("click", (e) => {
 
 const paginationEl = `
 <div>
-  <h1>page number</h1>
-  <div>
-    <button class="btnsPage" value=1>1</button>
-    <button class="btnsPage" value=2>2</button>
-    <button class="btnsPage" value=3>3</button>
-    <button class="btnsPage" value=4>4</button>
-  </div>
   <div>
   <h1>per page</h1>
     <select class="optionsPerPage">
