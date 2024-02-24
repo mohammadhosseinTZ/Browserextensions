@@ -3,6 +3,12 @@ const breadcrumbs = document.querySelector(".breadcrumbs");
 const header_wrapper = document.getElementById("header-wrapper");
 const main_content = document.querySelector("#content-wrapper");
 let grouping = [];
+//pages
+const pages = document.querySelector(".pagination");
+const pagesEl = document.createElement("div");
+pagesEl.innerHTML = pages.innerHTML;
+document.body.prepend(pagesEl);
+
 // navbar creating
 const nav = `
 <ul  style=" display: flex; align-items: center; justify-content: space-between; border: 1px solid black; padding: 20px; " class="test">
@@ -25,8 +31,10 @@ document.querySelector(".test").addEventListener("click", (e) => {
   if (e.target.classList.contains("test")) {
     return;
   } else {
-    grouping = []
+    grouping = [];
     let html = "";
+
+    console.log(pages);
     //filtering items with its breadcrumbs
     lists.forEach((list, index) => {
       if (
@@ -45,7 +53,6 @@ document.querySelector(".test").addEventListener("click", (e) => {
     });
     main_content.innerHTML = html;
   }
-  
 });
 
 //pagination
@@ -66,12 +73,9 @@ document.body.insertAdjacentHTML("afterbegin", paginationEl);
 
 //perpage num
 document.querySelector("select").addEventListener("change", (e) => {
-  let html2 ='';
+  let html2 = "";
   grouping.slice(0, e.target.value).forEach((elem) => {
     html2 += elem.innerHTML;
   });
   main_content.innerHTML = html2;
 });
-
-
-
