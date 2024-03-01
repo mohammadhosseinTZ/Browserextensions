@@ -1,17 +1,67 @@
-.scroll-hide,.blogroll-inner-wrapper  , .last-topics-wrapper , #kaprila_p30download_ir_related-top-post ,.last-topics , .blogroll ,  #header-wrapper ,div#lun-notif.scroll-hide{
+/* .scroll-hide,.blogroll-inner-wrapper  , .last-topics-wrapper , #kaprila_p30download_ir_related-top-post ,.last-topics , .blogroll ,  #header-wrapper ,div#lun-notif.scroll-hide{
     display: none;
+} */
+.display_none{
+    display: none !important;
 }
 .pagination {
     display: block;
 }
-body>div:nth-of-type(2){
+
+#main-cat{
+    display: none;
+}
+.active{
+    width: 70% !important;
+    height: 400px !important;
+    border-radius: 4px !important;
+    flex-direction: column-reverse;
+    /* align-items: start !important; */
+    justify-content: start !important;
+    padding: 50px;
+    gap: 40px;
+   margin: auto;
+}
+.pageSelect{
+    background-color: white;
+    color: black;
+    padding: 10px;
+}
+.pageActive{
+    background-color: rgb(0, 0, 99) !important;
+    color: white !important;
+}
+.contentActive{
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 40px;
-    background-color: bisque;
 }
-body>div:nth-of-type(2)>ul{
+.optionsPerPage{
+    margin: auto;
+}
+.stickyUl{
     display: flex;
-    gap: 40px;
+    flex-direction: column;
+    gap: 30px;
+}
+.stickyUl>li{
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 7px;
+}
+.paginationSticy{
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: flex-end;
+}
+.d-none{
+display: none !important;
+}
+.d-block{
+    display: block !important;
+}
+#myStickyItems{
+    padding: 50px;
 }
