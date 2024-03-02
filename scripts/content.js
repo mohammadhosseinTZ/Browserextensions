@@ -1,3 +1,5 @@
+
+
 const lists = document.querySelectorAll(".article-wrapper");
 const breadcrumbs = document.querySelector(".breadcrumbs");
 
@@ -34,7 +36,7 @@ const myStickyItems = `
   <div >
     <ul class="stickyUl">
       <li id="mySearchBox">
-        <input type="search" >
+        <input type="search" placeholder="serach by value" width="200px" >
         <button>Click</button>
       </li>
       <li style ="display: flex; align-items: center;gap:10px; flex-direction: column; ">
@@ -89,7 +91,7 @@ const myStickyItems = `
         <label for="film">فیلم</label>
         </div>
         <div>
-        <input type="checkbox" id="sout" value="صوت" class="myissues">
+        <input type="checkbox" id="sout" value=" صوت "   class="myissues">
         <label for="sout">صوت</label>
         </div>
         <div>
@@ -385,6 +387,7 @@ async function createItemByCheckBox(page, perPage) {
   let newMyData2 = [];
   let html = "";
   const mainContentEl = document.getElementById("main-content");
+  mainContentEl.innerHTML = "<spa>please wait to fetch</spa>";
   for (let f = page; f < paginationMainEl; f++) {
     console.log(f);
     const res = await fetch(`https://p30download.ir/page/` + f);
@@ -436,7 +439,7 @@ async function searchBox(page, perPage, inputELValue) {
 
   const mainContentEl = document.getElementById("main-content");
   mainContentEl.innerHTML = "<spa>please wait to fetch</spa>";
-  for (let f = page; f < 3000; f++) {
+  for (let f = page; f < paginationMainEl; f++) {
     newMyData1 = [];
     const res = await fetch(`https://p30download.ir/page/` + f);
 
@@ -446,7 +449,7 @@ async function searchBox(page, perPage, inputELValue) {
     const document = parser.parseFromString(data, "text/html");
     newMyData1.push(...document.querySelectorAll(".article-wrapper"));
     newMyData1.forEach((elem) => {
-      console.log(elem.textContent);
+      
       if (elem.textContent.includes(inputELValue)) {
         newMyData2.push(elem);
         newMyData2 = [...new Set(newMyData2)];
@@ -459,8 +462,9 @@ async function searchBox(page, perPage, inputELValue) {
       for (let i = 0; i < perPage; i++) {
         html += newMyData2[i].innerHTML;
       }
-
-      mainContentEl.innerHTML = html;
+      let pattern =new RegExp(inputELValue , "ig")
+      mainContentEl.innerHTML = html.replace(pattern , `<span style="color: red;">${inputELValue}</span>`);
+      // mainContentEl.innerHTML = html;
       return;
     }
   }
