@@ -1,20 +1,21 @@
 const lists = document.querySelectorAll(".article-wrapper");
 const breadcrumbs = document.querySelector(".breadcrumbs");
-const header_wrapper = document.getElementById("header-wrapper");
-const main_content = document.querySelector("#content-wrapper");
-let grouping = [];
-let t = [];
+
+let t = false;
 
 let myData = [];
 let checkboxIssuesContainer = [];
 let searchBoxInputValue = "";
-
-mySticky = `
-<div id="personalization" style="width: 130px; height: 130px; border-radius: 50%;background: linear-gradient(183deg, rgba(2,0,36,1) 0%, rgba(71,71,201,1) 45%, rgba(0,212,255,1) 100%); color: white; display: flex; align-items: center; justify-content: center; position: fixed; left: 220px;top: 10; z-index: 9999; ">
-personalization#
+let myInputValue = "";
+let mySticky = `
+<div id="personalization" style="width: 130px; height: 130px; border-radius: 50%;background: linear-gradient(183deg, rgba(2,0,36,1) 0%, rgba(71,71,201,1) 45%, rgba(0,212,255,1) 100%); color: white; display: flex; align-items: center; justify-content: center; position: fixed; left: 220px;top: 10; z-index: 9999;cursor: pointer; ">
+#personalization
 </div>
 `;
-document.body.insertAdjacentHTML("afterbegin", mySticky);
+// document.body.insertAdjacentHTML("afterbegin", mySticky);
+const createMYSticky = document.createElement("div");
+createMYSticky.innerHTML = mySticky;
+document.body.prepend(createMYSticky);
 // creating page
 const paginationEl = document
   .querySelector(".pagination")
@@ -59,7 +60,7 @@ const myStickyItems = `
       </li>
       <li>
         <span>:Remove Advertising</span>
-        <input type="checkbox" id="myCheckBox">
+        <input type="checkbox" id="myCheckBox" >
       </li>
       <li id="checkboxIssues_container">
         
@@ -137,7 +138,7 @@ personalizationEl.addEventListener("click", (e) => {
   optionsPerPage.options[myOptionIndexNumber].selected = true;
   //options changing action
   optionsPerPage.addEventListener("change", (e) => {
-    e.stopPropagation()
+    e.stopPropagation();
     //
     perPageNumber = e.target.value;
     myOptionIndexNumber = optionsPerPage.options.selectedIndex;
@@ -167,7 +168,6 @@ personalizationEl.addEventListener("click", (e) => {
       <button class="pageSelect" style="cursor: none;">...</button>
       <button class="pageSelect" style="cursor: pointer;">${paginationMainEl}</button>`;
       } else if (+e.target.innerHTML < paginationMainEl - 2) {
-        console.log("ok");
         paginationSticyEl.innerHTML = `<button class="pageSelect" style="cursor: pointer;">1</button>
         <button class="pageSelect" style="cursor: none;">...</button>
         <button class="pageSelect" style="cursor: pointer;">${
@@ -247,18 +247,21 @@ personalizationEl.addEventListener("click", (e) => {
     e.stopPropagation();
 
     if (e.target.classList.contains("myissues")) {
+      console.log("ok");
       if (e.target.checked) {
         e.target.classList.add("clicked");
         checkboxIssuesContainer = [...new Set(checkboxIssuesContainer)];
         checkboxIssuesContainer.push(e.target.value);
         createItemByCheckBox(pageNumber, perPageNumber);
         console.log("first" + checkboxIssuesContainer);
-      } else if (e.target.classList.contains("clicked")) {
+
+        // if (e.target.classList.contains("clicked")) jloye else bood
+      } else {
         e.target.classList.remove("clicked");
         let index = checkboxIssuesContainer.findIndex(
           (elem) => elem === e.target.value
         );
-        console.log(index);
+
         checkboxIssuesContainer.splice(index, 1);
         paginationUntilWhen(perPageNumber, pageNumber);
         // createItemByCheckBox(pageNumber ,perPageNumber)
@@ -266,11 +269,18 @@ personalizationEl.addEventListener("click", (e) => {
       }
     }
   });
+
+  let k = [...document.querySelectorAll(".myissues")];
+  k.filter((elem) =>
+    checkboxIssuesContainer.join(" ").includes(elem.value)
+  ).forEach((elem) => elem.setAttribute("checked", "true"));
+
   //Advertising
 
   checkbox.addEventListener("click", (e) => {
-    e.preventDefault()
-    //
+    checkbox.removeAttribute("checked", "true");
+
+    e.stopPropagation();
     e.target.classList.toggle("checkBox");
     if (e.target.classList.contains("checkBox")) {
       [
@@ -279,27 +289,35 @@ personalizationEl.addEventListener("click", (e) => {
         ),
       ].forEach((elem) => elem.classList.toggle("display_none"));
       document.getElementById("content").classList.add("contentActive");
+      if (t === false) {
+        t = true;
+      } else {
+        t = false;
+        checkbox.removeAttribute("checked", "true");
+      }
     }
   });
+
+  if (t === true) {
+    checkbox.setAttribute("checked", "true");
+  }
 
   //mySearchBox
   const mySearchBox = document.querySelector("#mySearchBox");
   const inputEL = mySearchBox.querySelector("input");
   const buttonEl = mySearchBox.querySelector("button");
-  
+
   buttonEl.addEventListener("click", (e) => {
     e.stopPropagation();
-   
+    myInputValue = e.target.value;
     searchBoxInputValue = inputEL.value;
 
     if (inputEL.value === "") inputEL.value = "";
     else {
-      
-      searchBox(pageNumber, perPageNumber, inputEL.value );
-      
+      searchBox(pageNumber, perPageNumber, inputEL.value);
     }
-    
   });
+  inputEL.value = searchBoxInputValue;
 });
 
 //mysticky leave action
@@ -325,24 +343,28 @@ async function paginationUntilWhen(perPage, page) {
 
       break;
   }
-  for (let f = page; f < page + i; f++) {
-    const res = await fetch(`https://p30download.ir/page/` + f);
-    const data = await res.text();
-    const parser = new DOMParser();
-    const document = parser.parseFromString(data, "text/html");
-    myData.push(...document.querySelectorAll(".article-wrapper"));
+  try{
+    for (let f = page; f < page + i; f++) {
+      const res = await fetch(`https://p30download.ir/page/` + f);
+      const data = await res.text();
+      const parser = new DOMParser();
+      const document = parser.parseFromString(data, "text/html");
+      myData.push(...document.querySelectorAll(".article-wrapper"));
+    }
+    createPerPage(myData, perPage);
+  }catch{
+    console.log('YEKAM KAM DARIM :((');
   }
-  createPerPage(myData, perPage);
 }
 //showing item , perpage
 function createPerPage(data, numberOfItems) {
   let html = "";
 
   const mainContentEl = document.getElementById("main-content");
-  console.log(searchBoxInputValue);
+
   if (searchBoxInputValue !== "") {
     searchBox(pageNumber, numberOfItems, searchBoxInputValue);
-    console.log("okye");
+    console.log("ok1");
   } else if (new Set(checkboxIssuesContainer).size !== 0) {
     createItemByCheckBox(pageNumber, perPageNumber);
     console.log("ok2");
@@ -405,19 +427,19 @@ async function createItemByCheckBox(page, perPage) {
 
 // serarch box
 
-async function searchBox(page, perPage, inputELValue ) {
+async function searchBox(page, perPage, inputELValue) {
   myData = [];
-  console.log(page + "page");
+
   let newMyData1 = [];
   let newMyData2 = [];
-  let html = ""; 
-  
+  let html = "";
+
   const mainContentEl = document.getElementById("main-content");
-  mainContentEl.innerHTML="<spa>please wait to fetch</spa>"
+  mainContentEl.innerHTML = "<spa>please wait to fetch</spa>";
   for (let f = page; f < 3000; f++) {
-    newMyData1 =[]
+    newMyData1 = [];
     const res = await fetch(`https://p30download.ir/page/` + f);
-    
+
     console.log(f);
     const data = await res.text();
     const parser = new DOMParser();
@@ -425,29 +447,23 @@ async function searchBox(page, perPage, inputELValue ) {
     newMyData1.push(...document.querySelectorAll(".article-wrapper"));
     newMyData1.forEach((elem) => {
       console.log(elem.textContent);
-      if(elem.textContent.includes(inputELValue)){
+      if (elem.textContent.includes(inputELValue)) {
         newMyData2.push(elem);
         newMyData2 = [...new Set(newMyData2)];
       }
     });
-    
+
     console.log(newMyData2.length + "lrnght");
     console.log(perPage + "perpage");
     if (newMyData2.length > perPage) {
       for (let i = 0; i < perPage; i++) {
         html += newMyData2[i].innerHTML;
       }
-      
+
       mainContentEl.innerHTML = html;
       return;
     }
-    // else {
-    //   console.log("omadam paeen" + searchBoxInputValue);
-    //   mainContentEl.innerHTML = ` <span style="font-size: 80px; color: red;">!!!NOT FOUND</span>
-    //   <span style="display: block;font-size: 30px;color: red;">...wait a moment</span>`;
-    //   searchBoxInputValue = "";
-    //   paginationUntilWhen(perPageNumber, pageNumber);
-    //   return;
-    // }
   }
+  if (newMyData2.length < perPage)
+    mainContentEl.innerHTML = `<span style="font-size: 80px; color: red;">NOT FOUND!!!</span>`;
 }
