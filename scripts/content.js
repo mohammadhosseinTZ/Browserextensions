@@ -121,6 +121,7 @@ const personalizationEl = document.getElementById("personalization");
 
 personalizationEl.addEventListener("click", (e) => {
   e.stopPropagation();
+  e.preventDefault()
   //menu created
   personalizationEl.classList.add("active");
   e.target.innerHTML = myStickyItems;
