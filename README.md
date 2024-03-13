@@ -1,4 +1,4 @@
-<img width="1118" alt="another" src="https://github.com/mohammadhosseinTZ/chromeExtensions/assets/146634977/e8dd603f-1b98-48ec-ae44-cf0fca7b7dca"># how does it work ??
+
 
 ## This is what you see without extensions
 <img width="1113" alt="first" src="https://github.com/mohammadhosseinTZ/chromeExtensions/assets/146634977/138bf725-e881-4a0c-9fdd-db94586b2a74">
