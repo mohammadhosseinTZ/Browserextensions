@@ -1,474 +1,965 @@
 
 
-const lists = document.querySelectorAll(".article-wrapper");
-const breadcrumbs = document.querySelector(".breadcrumbs");
-
-let t = false;
-
-let myData = [];
-let checkboxIssuesContainer = [];
-let searchBoxInputValue = "";
-let myInputValue = "";
-let mySticky = `
-<div id="personalization" style="width: 130px; height: 130px; border-radius: 50%;background: linear-gradient(183deg, rgba(2,0,36,1) 0%, rgba(71,71,201,1) 45%, rgba(0,212,255,1) 100%); color: white; display: flex; align-items: center; justify-content: center; position: fixed; left: 220px;top: 10; z-index: 9999;cursor: pointer; ">
-#personalization
-</div>
-`;
-// document.body.insertAdjacentHTML("afterbegin", mySticky);
-const createMYSticky = document.createElement("div");
-createMYSticky.innerHTML = mySticky;
-document.body.prepend(createMYSticky);
-// creating page
 const paginationEl = document
   .querySelector(".pagination")
   .querySelector("ul")
   .querySelector("li:nth-last-of-type(2)")
   .querySelector("a").innerHTML;
+//element
 
-let myStickyPage = false;
-const paginationMainEl = document
-  .querySelector(".pagination")
-  .querySelector("ul")
-  .querySelector("li:nth-last-of-type(2)")
-  .querySelector("a").innerHTML;
-//perpage options
-const myStickyItems = `
-  <div >
-    <ul class="stickyUl">
-      <li id="mySearchBox">
-        <input type="search" placeholder="serach by value" width="200px" >
-        <button>Click</button>
-      </li>
-      <li style ="display: flex; align-items: center;gap:10px; flex-direction: column; ">
-      <span style ="font-size: 15px; text-align:end">Choose how many items you want to see on each page</span> 
-      <select class="optionsPerPage">
-        <option  value="3">default</option>
-        <option  value="5">5</option>
-        <option  value="10">10</option>
-        <option  value="15">15</option>
-        <option  value="20">20</option>
-        <option  value="45">45</option>
-      </select>
-      
-      </li>
-      
-      <li id="paginationSticy">
-        <button class="pageSelect" style="cursor: pointer; ">1</button>
-        <button class="pageSelect" style="cursor: pointer;">2</button>
-        <button class="pageSelect" style="cursor: pointer;">3</button>
-        <button class="pageSelect" style="cursor: pointer;">4</button>
-        <button class="pageSelect" style="cursor: none;">...</button>
-        <button class="pageSelect" style="cursor: pointer;">${paginationMainEl}</button>
-      </li>
-      <li>
-        <span>:Remove Advertising</span>
-        <input type="checkbox" id="myCheckBox" >
-      </li>
-      <li id="checkboxIssues_container">
-        
-        <div>
-        <input type="checkbox" id="narmafzar" value="نرم افزا" class="myissues">
-        <label for="narmafzar">نرم افزار</label>
-        </div>
-        <div>
-        <input type="checkbox" id="bazi" value="بازی" class="myissues">
-        <label for="bazi">بازی</label>
-        </div>
-        <div>
-        <input type="checkbox" id="amoozesh" value="آموزش" class="myissues">
-        <label for="amoozesh">آموزش</label>
-        </div>
-        <div>
-        <input type="checkbox" id="mobile" value="موبایل" class="myissues">
-        <label for="mobile">موبایل</label>
-        </div>
-        <div>
-        <input type="checkbox" id="ketab" value="کتاب" class="myissues">
-        <label for="ketab">کتاب</label>
-        </div>
-        <div>
-        <input type="checkbox" id="film" value="فیلم" class="myissues">
-        <label for="film">فیلم</label>
-        </div>
-        <div>
-        <input type="checkbox" id="sout" value=" صوت "   class="myissues">
-        <label for="sout">صوت</label>
-        </div>
-        <div>
-        <input type="checkbox" id="graphics" value="گرافیک" class="myissues">
-        <label for="graphics">گرافیک</label>
-        </div>
-        <div>
-        <input type="checkbox" id="makintash" value="مکینتاش" class="myissues" >
-        <label for="makintash">مکینتاش</label>
-        </div>
-        <div>
-        <input type="checkbox" id="konsol" value="کنسول" class="myissues" >
-        <label for="konsol">کنسول</label>
-        </div>
-        
-      </li>
-      
-    </ul>
-  </div>
+const main_content = document.getElementById("main-content");
+const blogroll = document.querySelector(".blogroll");
+const tabliq_468 = document.querySelector(".tabliq-468");
+const last_topics = document.querySelector(".last-topics");
+//my variables
+let pageNumber = 1;
+let checkboxIssuesContainer = [];
+let checkboxIssuesContainer2 = [];
+const breadcrumbs = document.querySelector(".breadcrumbs");
+let i = 1;
+let perPageNumber = 17;
+let paginationNumberOfEndPage = perPageNumber/17;
+let newData = [];
+let html = "";
+let searchItem = "";
+let perPageClicked = false;
+let calledOnlyOnce = true;
+let pageScrollNum = 1;
+if (calledOnlyOnce) {
+  showingItems(pageNumber, pageNumber);
+  calledOnlyOnce = false;
+}
+//if perpage === 17
+let myPaginationEl = `<div style="margin: 30px;" id="paginationSticy">
+<button class="pageSelect pageActive" style="cursor: pointer; ">1</button>
+ <button class="pageSelect"  style="cursor: pointer;">2</button>
+ <button class="pageSelect"  style="cursor: pointer;">3</button>
+ <button class="pageSelect"  style="cursor: pointer;">4</button>
+ <button class="pageSelect"  style="cursor: none;">...</button>
+ <button class="pageSelect"  style="cursor: pointer;">${paginationEl}</button>
+</div>`;
+
+main_content.innerHTML = `
+${blogroll.innerHTML}
+${tabliq_468.innerHTML}
+${last_topics.innerHTML}
+${myPaginationEl}
 `;
 
-let myOptionIndexNumber = 0;
-let perPageNumber = 3;
-let pageNumber = 1;
-const personalizationEl = document.getElementById("personalization");
-//mysticky enter action
+//icon2
+const myIcon2 = document.createElement("div");
+myIcon2.style = style =
+  "width: 300px; height: 100%; background-color: darkgrey;;position: fixed; left:-400px;; z-index: 9999;padding: 10px; align-items: center;";
+myIcon2.classList.add("hide_icon2");
+myIcon2.innerHTML = `<div id="myIcon2">
+  <span id="close_item" style="cursor: pointer"><svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg></span>
+  <div id="mySearchBox">
+      <input type="search" placeholder="serach by value" width="200px" >
+      <button>SEARCH</button>
+  </div>
+  <div style="text-align: center;">
+    <span>:Remove Advertising</span>
+    <input type="checkbox" id="myCheckBox" > 
+  </div>
+  <div id="pagesNum">
+     <span style ="font-size: 12px; text-align:end">Choose how many pages you want to see on each page</span>
+     <select class="optionsPerPage">
+        <option  value="17" >default</option>
+        <option  value="51">Pages 3 </option>
+        <option  value="102">Pages 6 </option>
+        <option  value="170">Pages 10 </option>
+        <option  value="255">Pages 15 </option>
+      </select>
+  </div>
+  
+  <div id="checkboxIssues_container" style="padding: 5px;border: 1px solid black;">
+    <div >
+    <input type="checkbox" id="narmafzar" value="نرم افزا" class="myissues">
+    <label for="narmafzar">نرم افزار</label>
+    </div>
+    <div>
+    <input type="checkbox" id="bazi" value="بازی" class="myissues">
+    <label for="bazi">بازی</label>
+    </div>
+    <div>
+    <input type="checkbox" id="amoozesh" value="آموزش" class="myissues">
+    <label for="amoozesh">آموزش</label>
+    </div>
+    <div>
+    <input type="checkbox" id="mobile" value="موبایل" class="myissues">
+    <label for="mobile">موبایل</label>
+    </div>
+    <div>
+    <input type="checkbox" id="ketab" value="کتاب" class="myissues">
+    <label for="ketab">کتاب</label>
+    </div>
+    <div>
+    <input type="checkbox" id="film" value="فیلم" class="myissues">
+    <label for="film">فیلم</label>
+    </div>
+    <div>
+    <input type="checkbox" id="sout" value=" صوت "   class="myissues">
+    <label for="sout">صوت</label>
+    </div>
+    <div>
+    <input type="checkbox" id="graphics" value="گرافیک" class="myissues">
+    <label for="graphics">گرافیک</label>
+    </div>
+    <div>
+    <input type="checkbox" id="makintash" value="مکینتاش" class="myissues" >
+    <label for="makintash">مکینتاش</label>
+    </div>
+    <div>
+    <input type="checkbox" id="konsol" value="کنسول" class="myissues" >
+    <label for="konsol">کنسول</label>
+    </div>
+  </div>
+  <div style="text-align: end;">
+    <span >Tell me which category you don't want to see</span>
+    <div id="checkboxIssues_container2" style="padding: 5px;border: 1px solid black;">
+    <div >
+    <input type="checkbox" id="narmafzar2" value="نرم افزا" class="myissues2">
+    <label for="narmafzar2">نرم افزار</label>
+    </div>
+    <div>
+    <input type="checkbox" id="bazi2" value="بازی" class="myissues2">
+    <label for="bazi2">بازی</label>
+    </div>
+    <div>
+    <input type="checkbox" id="amoozesh2" value="آموزش" class="myissues2">
+    <label for="amoozesh2">آموزش</label>
+    </div>
+    <div>
+    <input type="checkbox" id="mobile2" value="موبایل" class="myissues2">
+    <label for="mobile2">موبایل</label>
+    </div>
+    <div>
+    <input type="checkbox" id="ketab2" value="کتاب" class="myissues2">
+    <label for="ketab2">کتاب</label>
+    </div>
+    <div>
+    <input type="checkbox" id="film2" value="فیلم" class="myissues2">
+    <label for="film2">فیلم</label>
+    </div>
+    <div>
+    <input type="checkbox" id="sout2" value=" صوت "   class="myissues2">
+    <label for="sout2">صوت</label>
+    </div>
+    <div>
+    <input type="checkbox" id="graphics2" value="گرافیک" class="myissues2">
+    <label for="graphics2">گرافیک</label>
+    </div>
+    <div>
+    <input type="checkbox" id="makintash2" value="مکینتاش" class="myissues2" >
+    <label for="makintash2">مکینتاش</label>
+    </div>
+    <div>
+    <input type="checkbox" id="konsol2" value="کنسول" class="myissues2" >
+    <label for="konsol2">کنسول</label>
+    </div>
+    </div>
+  </div>      
+</div>`;
 
-personalizationEl.addEventListener("click", (e) => {
-  e.stopPropagation();
-  e.preventDefault()
-  //menu created
-  personalizationEl.classList.add("active");
-  e.target.innerHTML = myStickyItems;
-  //add mysticky edited
-  myStickyPage
-    ? (document.getElementById("paginationSticy").innerHTML = myStickyPage)
-    : "";
-  let g = [...document.querySelectorAll(".pageSelect")].filter(
-    (elem) => +elem.innerHTML == +pageNumber
-  );
-  g[0].classList.add("pageActive");
-  //my checkbox element
-  const checkbox = document.querySelector(`#myCheckBox`);
-
-  // my perpage element
-  const optionsPerPage = document.querySelector(".optionsPerPage");
-  optionsPerPage.options[myOptionIndexNumber].selected = true;
-  //options changing action
-  optionsPerPage.addEventListener("change", (e) => {
-    e.stopPropagation();
-    //
-    perPageNumber = e.target.value;
-    myOptionIndexNumber = optionsPerPage.options.selectedIndex;
-    paginationUntilWhen(perPageNumber, pageNumber);
-  });
-  //page tag action
-  const paginationSticyEl = document.getElementById("paginationSticy");
-  paginationSticyEl.addEventListener("click", (e) => {
-    if (e.target.classList.contains("pageSelect")) {
-      pageNumber = +e.target.innerHTML;
-
-      paginationUntilWhen(perPageNumber, pageNumber);
-      if (+e.target.innerHTML <= 3) {
-        paginationSticyEl.innerHTML = `
-      <button class="pageSelect" style="cursor: pointer; ">1</button>
-      <button class="pageSelect" style="cursor: pointer;">2</button>
-      <button class="pageSelect" style="cursor: pointer;">3</button>
-      <button class="pageSelect" style="cursor: pointer;">4</button>
-      <button class="pageSelect" style="cursor: none;">...</button>
-      <button class="pageSelect" style="cursor: pointer;">${paginationMainEl}</button>
-      `;
-
-        myStickyPage = `<button class="pageSelect" style="cursor: pointer; ">1</button>
-      <button class="pageSelect" style="cursor: pointer;">2</button>
-      <button class="pageSelect" style="cursor: pointer;">3</button>
-      <button class="pageSelect" style="cursor: pointer;">4</button>
-      <button class="pageSelect" style="cursor: none;">...</button>
-      <button class="pageSelect" style="cursor: pointer;">${paginationMainEl}</button>`;
-      } else if (+e.target.innerHTML < paginationMainEl - 2) {
-        paginationSticyEl.innerHTML = `<button class="pageSelect" style="cursor: pointer;">1</button>
-        <button class="pageSelect" style="cursor: none;">...</button>
-        <button class="pageSelect" style="cursor: pointer;">${
-          +e.target.innerHTML - 2
-        }</button>
-        <button class="pageSelect" style="cursor: pointer;">${
-          +e.target.innerHTML - 1
-        }</button>
-        <button class="pageSelect pageActive" style="cursor: pointer;">${+e
-          .target.innerHTML}</button>
-        <button class="pageSelect" style="cursor: pointer;">${
-          +e.target.innerHTML + 1
-        }</button>
-        <button class="pageSelect" style="cursor: pointer;">${
-          +e.target.innerHTML + 2
-        }</button>
-        <button class="pageSelect" style="cursor: none;">...</button>
-        <button class="pageSelect" style="cursor: pointer;">${paginationMainEl}</button>`;
-
-        myStickyPage = `<button class="pageSelect" style="cursor: pointer;">1</button>
-        <button class="pageSelect" style="cursor: none;">...</button>
-        <button class="pageSelect" style="cursor: pointer;">${
-          +e.target.innerHTML - 2
-        }</button>
-        <button class="pageSelect" style="cursor: pointer;">${
-          +e.target.innerHTML - 1
-        }</button>
-        <button class="pageSelect pageActive" style="cursor: pointer;">${+e
-          .target.innerHTML}</button>
-        <button class="pageSelect" style="cursor: pointer;">${
-          +e.target.innerHTML + 1
-        }</button>
-        <button class="pageSelect" style="cursor: pointer;">${
-          +e.target.innerHTML + 2
-        }</button>
-        <button class="pageSelect" style="cursor: none;">...</button>
-        <button class="pageSelect" style="cursor: pointer;">${paginationMainEl}</button>`;
-      } else if (+e.target.innerHTML > paginationMainEl - 2) {
-        paginationSticyEl.innerHTML = `
-        <button class="pageSelect" style="cursor: pointer; ">1</button>
-        <button class="pageSelect" style="cursor: none;">...</button>
-        <button class="pageSelect" style="cursor: pointer;">${
-          paginationMainEl - 3
-        }</button>
-        <button class="pageSelect" style="cursor: pointer;">${
-          paginationMainEl - 2
-        } </button>
-        <button class="pageSelect" style="cursor: pointer;">${
-          paginationMainEl - 1
-        }</button>
-        <button class="pageSelect" style="cursor: pointer;">${paginationMainEl}</button>
-        `;
-        myStickyPage = `
-        <button class="pageSelect" style="cursor: pointer; ">1</button>
-        <button class="pageSelect" style="cursor: none;">...</button>
-        <button class="pageSelect" style="cursor: pointer;">${
-          paginationMainEl - 3
-        }</button>
-        <button class="pageSelect" style="cursor: pointer;">${
-          paginationMainEl - 2
-        } </button>
-        <button class="pageSelect" style="cursor: pointer;">${
-          paginationMainEl - 1
-        }</button>
-        <button class="pageSelect" style="cursor: pointer;">${paginationMainEl}</button>
-        `;
-      }
-    }
-    console.log("perpage is" + perPageNumber);
-  });
-  //checkbox issues
-
-  const checkboxIssues_containerEl = document.getElementById(
-    "checkboxIssues_container"
-  );
-  checkboxIssues_containerEl.addEventListener("click", (e) => {
-    e.stopPropagation();
-
-    if (e.target.classList.contains("myissues")) {
-      console.log("ok");
-      if (e.target.checked) {
-        e.target.classList.add("clicked");
-        checkboxIssuesContainer = [...new Set(checkboxIssuesContainer)];
-        checkboxIssuesContainer.push(e.target.value);
-        createItemByCheckBox(pageNumber, perPageNumber);
-        console.log("first" + checkboxIssuesContainer);
-
-        // if (e.target.classList.contains("clicked")) jloye else bood
-      } else {
-        e.target.classList.remove("clicked");
-        let index = checkboxIssuesContainer.findIndex(
-          (elem) => elem === e.target.value
-        );
-
-        checkboxIssuesContainer.splice(index, 1);
-        paginationUntilWhen(perPageNumber, pageNumber);
-        // createItemByCheckBox(pageNumber ,perPageNumber)
-        console.log("second" + checkboxIssuesContainer);
-      }
-    }
-  });
-
-  let k = [...document.querySelectorAll(".myissues")];
-  k.filter((elem) =>
-    checkboxIssuesContainer.join(" ").includes(elem.value)
-  ).forEach((elem) => elem.setAttribute("checked", "true"));
-
-  //Advertising
-
-  checkbox.addEventListener("click", (e) => {
-    checkbox.removeAttribute("checked", "true");
-
-    e.stopPropagation();
-    e.target.classList.toggle("checkBox");
-    if (e.target.classList.contains("checkBox")) {
-      [
-        ...document.querySelectorAll(
-          ".scroll-hide, .blogroll-inner-wrapper, #sidebar , .tabliq-468 , .last-topics-wrapper , #kaprila_p30download_ir_related-top-post ,.blogroll , div#lun-notif , .last-topics , .scroll-hide display_none , div#lun-notif.scroll-hide"
-        ),
-      ].forEach((elem) => elem.classList.toggle("display_none"));
-      document.getElementById("content").classList.add("contentActive");
-      if (t === false) {
-        t = true;
-      } else {
-        t = false;
-        checkbox.removeAttribute("checked", "true");
-      }
-    }
-  });
-
-  if (t === true) {
-    checkbox.setAttribute("checked", "true");
-  }
-
-  //mySearchBox
-  const mySearchBox = document.querySelector("#mySearchBox");
-  const inputEL = mySearchBox.querySelector("input");
-  const buttonEl = mySearchBox.querySelector("button");
-
-  buttonEl.addEventListener("click", (e) => {
-    e.stopPropagation();
-    myInputValue = e.target.value;
-    searchBoxInputValue = inputEL.value;
-
-    if (inputEL.value === "") inputEL.value = "";
-    else {
-      searchBox(pageNumber, perPageNumber, inputEL.value);
-    }
-  });
-  inputEL.value = searchBoxInputValue;
+document.body.prepend(myIcon2);
+document.getElementById("close_item").addEventListener("click", () => {
+  myIcon2.classList.remove("active_icon2");
+  myIcon2.classList.add("hide_icon2");
+  myIcon.classList.remove("d-none");
+  setTimeout(() => {
+    myIcon.classList.add("d-flex");
+  }, 1000);
 });
-
-//mysticky leave action
-personalizationEl.addEventListener("mouseleave", (e) => {
-  e.target.classList.remove("active");
-  personalizationEl.innerHTML = `#personalization`;
+//icon
+const myIcon = document.createElement("div");
+myIcon.style =
+  "display: flex; align-items: center ; justify-content: center;background-color: white; width: 130px; height: 130px; border-radius:30px; position: fixed; left: 60px;top: 40; z-index: 9999;cursor: pointer";
+myIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="54" viewBox="0 -960 960 960" width="54"><path d="M400-240v-80h160v80H400ZM240-440v-80h480v80H240ZM120-640v-80h720v80H120Z"/></svg>`;
+document.body.prepend(myIcon);
+myIcon.addEventListener("click", () => {
+  myIcon.classList.add("d-none");
+  myIcon.classList.remove("d-flex");
+  myIcon2.classList.add("active_icon2");
+  myIcon2.classList.remove("hide_icon2");
 });
-// taking items from pcdownload , async
-let i = 1;
-async function paginationUntilWhen(perPage, page) {
-  myData = [];
+// creating pagination
 
-  switch (perPage) {
-    case perPage <= 17:
-      i = 1;
-      break;
-    case 17 < perPage <= 34:
-      i = 2;
+const paginationSticyEl = document.getElementById("paginationSticy");
 
-      break;
-    case 34 < perPage <= 51:
-      i = 3;
+//we need number of  initial page and number of the end page
+const createItems = document.createElement("div");
+const createResult = document.createElement("div");
 
-      break;
-  }
-  try{
-    for (let f = page; f < page + i; f++) {
-      const res = await fetch(`https://p30download.ir/page/` + f);
-      const data = await res.text();
-      const parser = new DOMParser();
-      const document = parser.parseFromString(data, "text/html");
-      myData.push(...document.querySelectorAll(".article-wrapper"));
-    }
-    createPerPage(myData, perPage);
-  }catch{
-    console.log('YEKAM KAM DARIM :((');
-  }
-}
-//showing item , perpage
-function createPerPage(data, numberOfItems) {
-  let html = "";
+async function showingItems(initialPage, howManyPage) {
+  newData = [];
+  pageScrollNum = 0;
+  html = "";
+  let stepperNUmCheckBox = 0;
+  let stepperNUmCheckBox2 = 0;
+  let stepperNUmCheckBox3 = 0;
+  let stepperNUmCheckBoxArry = [];
+  let searchNewData = [];
+  let myCheckoxNewArray = [];
+  let myCheckoxNewArray2 =[]
+  let myCheckoxNewArray3 =[]
+  let myCheckoxNewArrayIndex = 0;
+  let myCheckoxNewArrayIndex2 = 0;
+  let myCheckoxNewArray2Length =0
+  paginationNumberOfEndPage = perPageNumber/17
+  console.log(checkboxIssuesContainer2);
+  document.body.insertAdjacentHTML(
+    "beforebegin",
+    `
+  <div class="sttepper">
+      <div class="stteps"> 
+      </div>
+      <div class="myEnd">  
+      </div>
+   </div>`
+  );
 
-  const mainContentEl = document.getElementById("main-content");
-
-  if (searchBoxInputValue !== "") {
-    searchBox(pageNumber, numberOfItems, searchBoxInputValue);
-    console.log("ok1");
-  } else if (new Set(checkboxIssuesContainer).size !== 0) {
-    createItemByCheckBox(pageNumber, perPageNumber);
-    console.log("ok2");
-  } else if (new Set(checkboxIssuesContainer).size === 0) {
-    console.log("ok3");
-    for (let i = 0; i < numberOfItems; i++) {
-      html += data[i].innerHTML;
-    }
-    if (data.length < numberOfItems) console.log("yaft nashod");
-    else mainContentEl.innerHTML = html;
-  }
-}
-// checkbox
-async function createItemByCheckBox(page, perPage) {
-  console.log(perPage);
-  myData = [];
-  let newMyData1 = [];
-  let newMyData2 = [];
-  let html = "";
-  const mainContentEl = document.getElementById("main-content");
-  mainContentEl.innerHTML = "<spa>please wait to fetch</spa>";
-  for (let f = page; f < paginationMainEl; f++) {
-    console.log(f);
-    const res = await fetch(`https://p30download.ir/page/` + f);
-    const data = await res.text();
-    const parser = new DOMParser();
-    const document = parser.parseFromString(data, "text/html");
-    newMyData1.push(...document.querySelectorAll(".article-wrapper"));
-
-    for (let i = 0; i < new Set(checkboxIssuesContainer).size; i++) {
-      newMyData1.forEach((elem) => {
-        if (
-          elem
-            .querySelector("header")
-            .querySelector("ul")
-            .querySelector(".breadcrumbs")
-            .innerHTML.indexOf([...new Set(checkboxIssuesContainer)][i]) > -1
-        ) {
-          newMyData2.push(elem);
+  document.querySelector(".sttepper").addEventListener("click", (e) => {
+    if (e.target.classList.contains("sttep")) {
+      document.querySelectorAll(".pageScrolled").forEach((elem) => {
+        if (elem.querySelector("span").innerHTML === e.target.innerHTML) {
+          elem.scrollIntoView({ behavior: "smooth", block: "center" });
         }
-        newMyData2 = [...new Set(newMyData2)];
       });
-    }
-    //if everything thing be good (perpageItem we want to see)
-    if (newMyData2.length > perPage) {
-      console.log("its eaual");
-      for (let i = 0; i < perPage; i++) {
-        html += newMyData2[i].innerHTML;
+      if (
+        e.target.innerHTML ===
+        document.querySelector(".pageScrolled").querySelector("span").innerHTML
+      ) {
+        document
+          .querySelector(".pageScrolled")
+          .querySelector("span")
+          .scrollIntoView({ bahavior: "smooth", block: "center" });
       }
-
-      mainContentEl.innerHTML = html;
-      return;
     }
-    // else {
-    //   mainContentEl.innerHTML = `<span style="font-size: 80px; color: red;">NOT FOUND!!!</span>`;
-    // }
-  }
-  if (newMyData2.length < perPage)
-    mainContentEl.innerHTML = `<span style="font-size: 80px; color: red;">NOT FOUND!!!</span>`;
-}
-
-// serarch box
-
-async function searchBox(page, perPage, inputELValue) {
-  myData = [];
-
-  let newMyData1 = [];
-  let newMyData2 = [];
-  let html = "";
-
-  const mainContentEl = document.getElementById("main-content");
-  mainContentEl.innerHTML = "<spa>please wait to fetch</spa>";
-  for (let f = page; f < paginationMainEl; f++) {
-    newMyData1 = [];
+  });
+  const steps = document.querySelector(".stteps");
+  const myEnd = document.querySelector(".myEnd");
+  steps.innerHTML = "";
+  myEnd.innerHTML = "";
+  myEnd.insertAdjacentHTML("beforeend", `<div class="sttepEnd" >PAGE</div>`);
+  for (let f = initialPage; f <= howManyPage; f++) {
     const res = await fetch(`https://p30download.ir/page/` + f);
-
-    console.log(f);
     const data = await res.text();
     const parser = new DOMParser();
     const document = parser.parseFromString(data, "text/html");
-    newMyData1.push(...document.querySelectorAll(".article-wrapper"));
-    newMyData1.forEach((elem) => {
-      
-      if (elem.textContent.includes(inputELValue)) {
-        newMyData2.push(elem);
-        newMyData2 = [...new Set(newMyData2)];
-      }
-    });
 
-    console.log(newMyData2.length + "lrnght");
-    console.log(perPage + "perpage");
-    if (newMyData2.length > perPage) {
-      for (let i = 0; i < perPage; i++) {
-        html += newMyData2[i].innerHTML;
+    newData.push(...document.querySelectorAll(".article-wrapper"));
+    let xmlString = `<div><div class="pageScrolled"><span>${f}</span> <span>:PAGE</span> </div></div>`;
+    let doc = new DOMParser().parseFromString(xmlString, "text/html");
+    doc.querySelector("body").querySelector("div").classList.add(`doc${f}`);
+    newData.push(doc.querySelector("body").querySelector("div"));
+    //stepper
+
+    if (!checkboxIssuesContainer.length > 0 && !checkboxIssuesContainer2.length > 0) {
+      steps.insertAdjacentHTML(
+        "beforeend",
+        `
+        <div class="myStteps" >
+            <div class="sttep acttive" >${f}</div>
+            <div class="linee" style="height: ${
+              (500 - perPageNumber) / 14
+            }px; "></div>
+          </div>
+        `
+      );
+    }
+    //error when you have checkboxIssuesContainer && checkboxIssuesContainer2 together
+    if(checkboxIssuesContainer.length > 0 && checkboxIssuesContainer2.length > 0)alert("OH SHIT!! YOU CAN`T DO IT.")
+    //if we had a checkbox issues
+    if (checkboxIssuesContainer.length > 0 && !checkboxIssuesContainer2.length > 0) {
+      for (let i = 0; i < checkboxIssuesContainer.length; i++) {
+        newData.forEach((elem) => {
+          if (
+            elem.classList.contains("article-wrapper") &&
+            elem
+              .querySelector("header")
+              .querySelector("ul")
+              .querySelector(".breadcrumbs")
+              .innerHTML.indexOf(checkboxIssuesContainer[i]) > -1
+          ) {
+            myCheckoxNewArray.push(elem);
+            stepperNUmCheckBoxArry.push(elem);
+          }
+          if (elem.classList.contains(`doc${f}`)) {
+            myCheckoxNewArray.push(elem);
+          }
+        });
       }
-      let pattern =new RegExp(inputELValue , "ig")
-      mainContentEl.innerHTML = html.replace(pattern , `<span style="color: red;">${inputELValue}</span>`);
-      // mainContentEl.innerHTML = html;
-      return;
+      myCheckoxNewArray = [...new Set(myCheckoxNewArray)];
+
+      //stepper
+      console.log(stepperNUmCheckBoxArry , "stepperNUmCheckBoxArry up");
+      stepperNUmCheckBoxArry.forEach((elem) => {
+        elem.classList.contains("article-wrapper") ? stepperNUmCheckBox++ : "";
+        stepperNUmCheckBoxArry.push(elem);
+      });
+      stepperNUmCheckBoxArry = [...new Set(stepperNUmCheckBoxArry)];
+      steps.insertAdjacentHTML(
+        "beforeend",
+        `
+        <div class="myStteps" >
+            <div class="sttep acttive" >${f}</div>
+            <div class="linee" style="height: ${
+              ((stepperNUmCheckBox - stepperNUmCheckBox2) * 280) / perPageNumber
+            }px; "></div>
+          </div>
+        `
+      );
+
+      if (myCheckoxNewArrayIndex + 1 >= myCheckoxNewArray.length) {
+        const emptyString = `<div>"we did not find any articles on this page"</div>`;
+        let doc = new DOMParser().parseFromString(emptyString, "text/html");
+        const index = myCheckoxNewArrayIndex;
+        myCheckoxNewArray.splice(index, 0, doc.querySelector("div"));
+      }
+
+      myCheckoxNewArrayIndex = myCheckoxNewArray.length;
+      stepperNUmCheckBox2 = stepperNUmCheckBox;
+      stepperNUmCheckBoxArry = [];
+      stepperNUmCheckBox = 0;
+      newData = myCheckoxNewArray
+    }
+    //if we want to remove special item
+    if (checkboxIssuesContainer2.length > 0 && !checkboxIssuesContainer.length > 0) {
+      myCheckoxNewArray2 = newData;
+      for (let i = 0; i < checkboxIssuesContainer2.length; i++) {
+        myCheckoxNewArray3=[]
+      
+        myCheckoxNewArray2.forEach(elem =>{
+          if(elem.classList.contains("article-wrapper")){
+            if(elem
+              .querySelector("header")
+              .querySelector("ul")
+              .querySelector(".breadcrumbs")
+              .innerHTML.includes(checkboxIssuesContainer2[i]) === false){
+                myCheckoxNewArray3.push(elem)
+                stepperNUmCheckBoxArry.push(elem);
+              }
+          }
+          if (elem.innerHTML.includes(`PAGE`)) {
+          
+            myCheckoxNewArray3.push(elem);
+           
+          }
+        })
+       
+        myCheckoxNewArray2 =myCheckoxNewArray3
+      }
+     
+
+
+      myCheckoxNewArray2 = [...new Set(myCheckoxNewArray2)];
+
+      //stepper
+     
+      stepperNUmCheckBoxArry.forEach((elem) => {
+        elem.classList.contains("article-wrapper") ? stepperNUmCheckBox++ : "";
+        stepperNUmCheckBoxArry.push(elem);
+      });
+      stepperNUmCheckBoxArry = [...new Set(stepperNUmCheckBoxArry)];
+      console.log(myCheckoxNewArray2 , "myCheckoxNewArray2");
+      
+      steps.insertAdjacentHTML(
+        "beforeend",
+        `
+        <div class="myStteps" >
+            <div class="sttep acttive" >${f}</div>
+            <div class="linee" style="height: ${
+              ((myCheckoxNewArray2.length  -myCheckoxNewArray2Length -1) * 20) /  stepperNUmCheckBox
+            }px; "></div>
+          </div>
+        `
+      );
+      myCheckoxNewArray2Length = myCheckoxNewArray2.length 
+      if (myCheckoxNewArrayIndex2 + 1 >= myCheckoxNewArray2.length) {
+        const emptyString = `<div>"we did not find any articles on this page"</div>`;
+        let doc = new DOMParser().parseFromString(emptyString, "text/html");
+        const index = myCheckoxNewArrayIndex2;
+        myCheckoxNewArray2.splice(index, 0, doc.querySelector("div"));
+      }
+
+      myCheckoxNewArrayIndex2 = myCheckoxNewArray2.length;
+      stepperNUmCheckBox3 = stepperNUmCheckBox;
+      stepperNUmCheckBoxArry = [];
+      stepperNUmCheckBox3 = 0;
+      newData = myCheckoxNewArray2
+    }
+    //if we had a search item
+    if (searchItem != "") {
+      newData.forEach((elem) => {
+        if (elem.textContent.includes(searchItem)) {
+          searchNewData.push(elem);
+        }
+        searchNewData = [...new Set(searchNewData)];
+      });
+      newData = searchNewData
     }
   }
-  if (newMyData2.length < perPage)
-    mainContentEl.innerHTML = `<span style="font-size: 80px; color: red;">NOT FOUND!!!</span>`;
+
+  // searchItem !== "" ? (newData = searchNewData) : "";
+  // myCheckoxNewArray.length > 0 ? (newData = myCheckoxNewArray) : "";
+  // myCheckoxNewArray2.length > 0 ? (newData = myCheckoxNewArray2) : "";
+
+  newData.forEach((elem) => {
+    html += elem.innerHTML;
+  });
+  if (searchItem !== "") {
+    let pattern = new RegExp(searchItem, "ig");
+
+    html = html.replace(
+      pattern,
+      `<span style="color: red;font-size: 17px;">${searchItem}</span>`
+    );
+  }
+  searchItem = "";
+  //items
+  const items = `<div class="myItems">${html}</div>`;
+  createItems.classList.add("hi");
+  createItems.innerHTML = items;
+  paginationSticyEl.before(createItems);
+  //perpage number firstline
+
+  newData.forEach((elem) => {
+    elem.classList.contains("article-wrapper") ? pageScrollNum++ : "";
+  });
+
+  createResult.innerHTML = `<span> articles</span>${pageScrollNum} `;
+  createResult.classList.add("createResult");
+  createItems.before(createResult);
 }
+
+//optionsPerPage
+document.querySelector(".optionsPerPage").addEventListener("change", (e) => {
+  perPageClicked = true;
+  newData = [];
+  pageNumber = 1;
+  perPageNumber = +e.target.value;
+
+  if (perPageNumber == 17) {
+    i = 1;
+    paginationSticyEl.innerHTML = `<div style="margin: 30px;" id="paginationSticy">
+    <button class="pageSelect pageActive" style="cursor: pointer; ">1</button>
+     <button class="pageSelect"  style="cursor: pointer;">2</button>
+     <button class="pageSelect"  style="cursor: pointer;">3</button>
+     <button class="pageSelect"  style="cursor: pointer;">4</button>
+     <button class="pageSelect"  style="cursor: none;">...</button>
+     <button class="pageSelect"  style="cursor: pointer;">${paginationEl}</button>
+    </div>`;
+    showingItems(pageNumber, i);
+  }
+  if (perPageNumber == 102) {
+    i = 7;
+    let iplus = 6;
+    paginationSticyEl.innerHTML = `<div style="margin: 30px;" id="paginationSticy">
+    <button class="pageSelect pageActive" style="cursor: pointer; "><span>1</span> - <span>6</span></button>
+     <button class="pageSelect"  style="cursor: pointer;"><span>6</span> - <span>12</span></button>
+     <button class="pageSelect"  style="cursor: pointer;"><span>12</span> - <span>18</span></button>
+     <button class="pageSelect"  style="cursor: pointer;"><span>18</span> - <span>24</span></button>
+     <button class="pageSelect"  style="cursor: none;">...</button>
+     <button class="pageSelect"  style="cursor: pointer;"><span>${
+       Math.ceil((paginationEl * 17) / perPageNumber) - 6
+     }</span> - <span>${Math.ceil(
+      (paginationEl * 17) / perPageNumber
+    )}</span></button>
+    </div>`;
+
+    showingItems(pageNumber, iplus);
+  }
+  if (perPageNumber == 170) {
+    i = 11;
+    let iplus = 10;
+    paginationSticyEl.innerHTML = `<div style="margin: 30px;" id="paginationSticy">
+    <button class="pageSelect pageActive" style="cursor: pointer; "><span>1</span> - <span>10</span></button>
+     <button class="pageSelect"  style="cursor: pointer;"><span>10</span> - <span>20</span></button>
+     <button class="pageSelect"  style="cursor: pointer;"><span>20</span> - <span>30</span></button>
+     <button class="pageSelect"  style="cursor: pointer;"><span>30</span> - <span>40</span></button>
+     <button class="pageSelect"  style="cursor: none;">...</button>
+     <button class="pageSelect"  style="cursor: pointer;"><span>${
+       Math.ceil((paginationEl * 17) / perPageNumber) - 10
+     }</span> - <span>${Math.ceil(
+      (paginationEl * 17) / perPageNumber
+    )}</span></button>
+    </div>`;
+
+    showingItems(pageNumber, iplus);
+  }
+  if (perPageNumber == 255) {
+    i = 16;
+    let iplus = 15;
+    paginationSticyEl.innerHTML = `<div style="margin: 30px;" id="paginationSticy">
+    <button class="pageSelect pageActive" style="cursor: pointer; "><span>1</span> - <span>15</span></button>
+     <button class="pageSelect"  style="cursor: pointer;"><span>15</span> - <span>30</span></button>
+     <button class="pageSelect"  style="cursor: pointer;"><span>30</span> - <span>45</span></button>
+     <button class="pageSelect"  style="cursor: pointer;"><span>45</span> - <span>60</span></button>
+     <button class="pageSelect"  style="cursor: none;">...</button>
+     <button class="pageSelect"  style="cursor: pointer;"><span>${
+       Math.ceil((paginationEl * 17) / perPageNumber) - 15
+     }</span> - <span>${Math.ceil(
+      (paginationEl * 17) / perPageNumber
+    )}</span></button>
+    </div>`;
+
+    showingItems(pageNumber, iplus);
+  }
+  if (perPageNumber == 51) {
+    i = 4;
+    let iplus = 3;
+    paginationSticyEl.innerHTML = `<div style="margin: 30px;" id="paginationSticy">
+    <button class="pageSelect pageActive" style="cursor: pointer; "><span>1</span> - <span>3</span></button>
+     <button class="pageSelect"  style="cursor: pointer;"><span>3</span> - <span>6</span></button>
+     <button class="pageSelect"  style="cursor: pointer;"><span>6</span> - <span>9</span></button>
+     <button class="pageSelect"  style="cursor: pointer;"><span>9</span> - <span>12</span></button>
+     <button class="pageSelect"  style="cursor: none;">...</button>
+     <button class="pageSelect"  style="cursor: pointer;"><span>${
+       Math.ceil((paginationEl * 17) / perPageNumber) - 3
+     }</span> - <span>${Math.ceil(
+      (paginationEl * 17) / perPageNumber
+    )}</span></button>
+    </div>`;
+
+    showingItems(pageNumber, iplus);
+  }
+});
+//pagePagination
+
+paginationSticyEl.addEventListener("click", (e) => {
+  if (e.target.classList.contains("pageSelect")) {
+    if (perPageNumber === 17) {
+      pageNumber = 0;
+
+      pageNumber = +e.target.innerHTML;
+      showingItems(pageNumber, pageNumber);
+      if (+e.target.innerHTML <= 3) {
+        if (+e.target.innerHTML === 1) {
+          paginationSticyEl.innerHTML = `
+              <button class="pageSelect pageActive" style="cursor: pointer; ">${+e
+                .target.innerHTML}</button>
+              <button class="pageSelect" style="cursor: pointer;">${
+                +e.target.innerHTML + 1
+              }</button>
+              <button class="pageSelect" style="cursor: pointer;">${
+                +e.target.innerHTML + 2
+              }</button>
+              <button class="pageSelect" style="cursor: pointer;">${
+                +e.target.innerHTML + 3
+              }</button>
+              <button class="pageSelect" style="cursor: none;">...</button>
+              <button class="pageSelect" style="cursor: pointer;">${paginationEl}</button>
+              `;
+        } else if (+e.target.innerHTML === 2) {
+          paginationSticyEl.innerHTML = `
+              <button class="pageSelect" style="cursor: pointer; ">${
+                +e.target.innerHTML - 1
+              }</button>
+              <button class="pageSelect pageActive" style="cursor: pointer;">${+e
+                .target.innerHTML}</button>
+              <button class="pageSelect" style="cursor: pointer;">${
+                +e.target.innerHTML + 1
+              }</button>
+              <button class="pageSelect" style="cursor: pointer;">${
+                +e.target.innerHTML + 2
+              }</button>
+              <button class="pageSelect" style="cursor: none;">...</button>
+              <button class="pageSelect" style="cursor: pointer;">${paginationEl}</button>
+              `;
+        } else if (+e.target.innerHTML === 3) {
+          paginationSticyEl.innerHTML = `
+              <button class="pageSelect" style="cursor: pointer; ">${
+                +e.target.innerHTML - 2
+              }</button>
+              <button class="pageSelect" style="cursor: pointer;">${
+                +e.target.innerHTML - 1
+              }</button>
+              <button class="pageSelect pageActive" style="cursor: pointer;">${+e
+                .target.innerHTML}</button>
+              <button class="pageSelect" style="cursor: pointer;">${
+                +e.target.innerHTML + 1
+              }</button>
+              <button class="pageSelect" style="cursor: none;">...</button>
+              <button class="pageSelect" style="cursor: pointer;">${paginationEl}</button>
+              `;
+        }
+      } else if (+e.target.innerHTML < paginationEl - 2) {
+        paginationSticyEl.innerHTML = `<button class="pageSelect" style="cursor: pointer;">1</button>
+              <button class="pageSelect" style="cursor: none;">...</button>
+              <button class="pageSelect" style="cursor: pointer;">${
+                +e.target.innerHTML - 2
+              }</button>
+              <button class="pageSelect" style="cursor: pointer;">${
+                +e.target.innerHTML - 1
+              }</button>
+              <button class="pageSelect pageActive" style="cursor: pointer;">${+e
+                .target.innerHTML}</button>
+              <button class="pageSelect" style="cursor: pointer;">${
+                +e.target.innerHTML + 1
+              }</button>
+              <button class="pageSelect" style="cursor: pointer;">${
+                +e.target.innerHTML + 2
+              }</button>
+              <button class="pageSelect" style="cursor: none;">...</button>
+              <button class="pageSelect" style="cursor: pointer;">${paginationEl}</button>`;
+      } else if (+e.target.innerHTML >= paginationEl - 2) {
+        if (e.target.innerHTML === paginationEl) {
+          paginationSticyEl.innerHTML = `
+              <button class="pageSelect" style="cursor: pointer; ">1</button>
+              <button class="pageSelect" style="cursor: none;">...</button>
+              <button class="pageSelect" style="cursor: pointer;">${
+                +e.target.innerHTML - 3
+              }</button>
+              <button class="pageSelect" style="cursor: pointer;">${
+                +e.target.innerHTML - 2
+              } </button>
+              <button class="pageSelect" style="cursor: pointer;">${
+                +e.target.innerHTML - 1
+              }</button>
+              <button class="pageSelect pageActive" style="cursor: pointer;">${+e
+                .target.innerHTML}</button>
+              `;
+        } else if (+e.target.innerHTML === paginationEl - 1) {
+          paginationSticyEl.innerHTML = `
+              <button class="pageSelect" style="cursor: pointer; ">1</button>
+              <button class="pageSelect" style="cursor: none;">...</button>
+              <button class="pageSelect" style="cursor: pointer;">${
+                +e.target.innerHTML - 2
+              }</button>
+              <button class="pageSelect" style="cursor: pointer;">${
+                +e.target.innerHTML - 1
+              } </button>
+              <button class="pageSelect pageActive" style="cursor: pointer;">${+e
+                .target.innerHTML}</button>
+              <button class="pageSelect " style="cursor: pointer;">${
+                +e.target.innerHTML + 1
+              }</button>
+              `;
+        } else if (+e.target.innerHTML === paginationEl - 2) {
+          paginationSticyEl.innerHTML = `
+              <button class="pageSelect" style="cursor: pointer; ">1</button>
+              <button class="pageSelect" style="cursor: none;">...</button>
+              <button class="pageSelect" style="cursor: pointer;">${
+                +e.target.innerHTML - 1
+              }</button>
+              <button class="pageSelect pageActive" style="cursor: pointer;">${+e
+                .target.innerHTML} </button>
+              <button class="pageSelect" style="cursor: pointer;">${
+                +e.target.innerHTML + 1
+              }</button>
+              <button class="pageSelect " style="cursor: pointer;">${
+                +e.target.innerHTML + 2
+              }</button>
+              `;
+        }
+      }
+    } else {
+      pageNumber = 0;
+      
+      pageNumber = +e.target.querySelector("span:nth-of-type(1)").innerHTML;
+      showingItems(
+        pageNumber === 1 ? 1 : pageNumber + 1,
+        +e.target.querySelector("span:nth-of-type(2)").innerHTML
+      );
+      paginationNumberOfEndPage = +e.target.querySelector("span:nth-of-type(2)")
+        .innerHTML;
+      if (pageNumber <= (perPageNumber * 2) / 17) {
+        if (pageNumber === 1) {
+          paginationSticyEl.innerHTML = `
+                <button class="pageSelect pageActive" style="cursor: pointer; "><span>1</span> - <span>${
+                  perPageNumber / 17
+                }</span></button>
+                <button class="pageSelect" style="cursor: pointer;"><span>${
+                  perPageNumber / 17
+                }</span> - <span>${(perPageNumber * 2) / 17}</span></button>
+                <button class="pageSelect" style="cursor: pointer;"><span>${
+                  (perPageNumber * 2) / 17
+                }</span> - <span>${(perPageNumber * 3) / 17}</span></button>
+                <button class="pageSelect" style="cursor: pointer;"><span>${
+                  (perPageNumber * 3) / 17
+                }</span> - <span>${(perPageNumber * 4) / 17}</span></button>
+                <button class="pageSelect" style="cursor: none;">...</button>
+                <button class="pageSelect" style="cursor: pointer;"><span>${
+                  Math.ceil((paginationEl * 17) / perPageNumber) -
+                  perPageNumber / 17
+                }</span> - <span>${Math.ceil(
+            (paginationEl * 17) / perPageNumber
+          )}</span></button>
+                `;
+        } else if (pageNumber === perPageNumber / 17) {
+          paginationSticyEl.innerHTML = `
+          <button class="pageSelect " style="cursor: pointer; "><span>1</span> - <span>${
+            perPageNumber / 17
+          }</span></button>
+          <button class="pageSelect pageActive" style="cursor: pointer;"><span>${
+            perPageNumber / 17
+          }</span> - <span>${(perPageNumber * 2) / 17}</span></button>
+          <button class="pageSelect" style="cursor: pointer;"><span>${
+            (perPageNumber * 2) / 17
+          }</span> - <span>${(perPageNumber * 3) / 17}</span></button>
+          <button class="pageSelect" style="cursor: pointer;"><span>${
+            (perPageNumber * 3) / 17
+          }</span> - <span>${(perPageNumber * 4) / 17}</span></button>
+          <button class="pageSelect" style="cursor: none;">...</button>
+          <button class="pageSelect" style="cursor: pointer;"><span>${
+            Math.ceil((paginationEl * 17) / perPageNumber) - perPageNumber / 17
+          }</span> - <span>${Math.ceil(
+            (paginationEl * 17) / perPageNumber
+          )}</span></button>
+          `;
+        } else if (pageNumber === (perPageNumber * 2) / 17) {
+          paginationSticyEl.innerHTML = `
+          <button class="pageSelect " style="cursor: pointer; "><span>1</span> - <span>${
+            perPageNumber / 17
+          }</span></button>
+          <button class="pageSelect " style="cursor: pointer;"><span>${
+            perPageNumber / 17
+          }</span> - <span>${(perPageNumber / 17) * 2}</span></button>
+          <button class="pageSelect pageActive" style="cursor: pointer;"><span>${
+            (perPageNumber * 2) / 17
+          }</span> - <span>${(perPageNumber * 3) / 17}</span></button>
+          <button class="pageSelect" style="cursor: pointer;"><span>${
+            (perPageNumber * 3) / 17
+          }</span> - <span>${(perPageNumber * 4) / 17}</span></button>
+          <button class="pageSelect" style="cursor: none;">...</button>
+          <button class="pageSelect" style="cursor: pointer;"><span>${
+            Math.ceil((paginationEl * 17) / perPageNumber) - perPageNumber / 17
+          }</span> - <span>${Math.ceil(
+            (paginationEl * 17) / perPageNumber
+          )}</span></button>
+          `;
+        }
+      } else if (
+        pageNumber <
+        Math.ceil((paginationEl * 17) / perPageNumber) -
+          (perPageNumber * 3) / 17
+      ) {
+        paginationSticyEl.innerHTML = `<button class="pageSelect" style="cursor: pointer;"><span>1</span> - <span>${
+          perPageNumber / 17
+        }</span></button>
+                <button class="pageSelect" style="cursor: none;">...</button>
+                <button class="pageSelect" style="cursor: pointer;"><span>${
+                  pageNumber - (perPageNumber * 2) / 17
+                }</span> - <span>${
+          pageNumber - perPageNumber / 17
+        }</span></button>
+                <button class="pageSelect" style="cursor: pointer;"><span>${
+                  pageNumber - perPageNumber / 17
+                }</span> - <span>${pageNumber}</span></button>
+                <button class="pageSelect pageActive" style="cursor: pointer;"><span>${pageNumber}</span> - <span>${
+          pageNumber + perPageNumber / 17
+        }</span></button>
+                <button class="pageSelect" style="cursor: pointer;"><span>${
+                  pageNumber + perPageNumber / 17
+                }</span> - <span>${
+          pageNumber + (perPageNumber * 2) / 17
+        }</span></button>
+                <button class="pageSelect" style="cursor: pointer;"><span>${
+                  pageNumber + (perPageNumber * 2) / 17
+                }</span> - <span>${
+          pageNumber + (perPageNumber * 3) / 17
+        }</span></button>
+                <button class="pageSelect" style="cursor: none;">...</button>
+                <button class="pageSelect" style="cursor: pointer;"><span>${
+                  Math.ceil((paginationEl * 17) / perPageNumber) -
+                  perPageNumber / 17
+                }</span> - <span>${Math.ceil(
+          (paginationEl * 17) / perPageNumber
+        )}</span></button>`;
+      } else if (
+        pageNumber >=
+        Math.ceil((paginationEl * 17) / perPageNumber) -
+          (perPageNumber * 3) / 17
+      ) {
+        if (
+          pageNumber ==
+          Math.ceil((paginationEl * 17) / perPageNumber) - perPageNumber / 17
+        ) {
+          paginationSticyEl.innerHTML = `
+                <button class="pageSelect" style="cursor: pointer; "><span>1</span> - <span>${
+                  perPageNumber / 17
+                }</span></button>
+                <button class="pageSelect" style="cursor: none;">...</button>
+                <button class="pageSelect" style="cursor: pointer;"><span>${
+                  pageNumber -
+                  perPageNumber / 17 -
+                  perPageNumber / 17 -
+                  perPageNumber / 17
+                }</span> - <span>${
+            pageNumber - perPageNumber / 17 - perPageNumber / 17
+          }</span></button>
+                <button class="pageSelect" style="cursor: pointer;"><span>${
+                  pageNumber - perPageNumber / 17 - perPageNumber / 17
+                }</span> - <span>${
+            pageNumber - perPageNumber / 17
+          }</span> </button>
+                <button class="pageSelect" style="cursor: pointer;"><span>${
+                  pageNumber - perPageNumber / 17
+                }</span> - <span>${pageNumber}</span></button>
+                <button class="pageSelect pageActive" style="cursor: pointer;"><span>${pageNumber}</span> - <span>${
+            pageNumber + perPageNumber / 17
+          }</span></button>
+                `;
+        } else if (
+          pageNumber ==
+          Math.ceil((paginationEl * 17) / perPageNumber) -
+            (perPageNumber / 17) * 2
+        ) {
+          paginationSticyEl.innerHTML = `
+                <button class="pageSelect" style="cursor: pointer; "><span>1</span> - <span>${
+                  perPageNumber / 17
+                }</span></button>
+                <button class="pageSelect" style="cursor: none;">...</button>
+                <button class="pageSelect" style="cursor: pointer;"><span>${
+                  pageNumber - perPageNumber / 17 - perPageNumber / 17
+                }</span> - <span>${
+            pageNumber - perPageNumber / 17
+          }</span></button>
+                <button class="pageSelect " style="cursor: pointer;"><span>${
+                  pageNumber - perPageNumber / 17
+                }</span> - <span>${pageNumber}</span> </button>
+                <button class="pageSelect pageActive " style="cursor: pointer;"><span>${pageNumber}</span> - <span>${
+            pageNumber + perPageNumber / 17
+          }</span></button>
+                <button class="pageSelect " style="cursor: pointer;"><span>${
+                  pageNumber + perPageNumber / 17
+                }</span> - <span>${
+            pageNumber + perPageNumber / 17 + perPageNumber / 17
+          }</span></button>
+                `;
+        } else if (
+          pageNumber ==
+          Math.ceil((paginationEl * 17) / perPageNumber) -
+            (perPageNumber / 17) * 3
+        ) {
+          paginationSticyEl.innerHTML = `
+                <button class="pageSelect" style="cursor: pointer; "><span>1</span> - <span>${
+                  perPageNumber / 17
+                }</span></button>
+                <button class="pageSelect" style="cursor: none;">...</button>
+                <button class="pageSelect" style="cursor: pointer;"><span>${
+                  pageNumber - perPageNumber / 17
+                }</span> - <span>${pageNumber}</span> </button>
+                <button class="pageSelect pageActive" style="cursor: pointer;"><span>${pageNumber}</span> - <span>${
+            pageNumber + perPageNumber / 17
+          }</span> </button>
+                <button class="pageSelect" style="cursor: pointer;"><span>${
+                  pageNumber + perPageNumber / 17
+                }</span> - <span>${
+            pageNumber + perPageNumber / 17 + perPageNumber / 17
+          }</span></button>
+                <button class="pageSelect " style="cursor: pointer;"><span>${
+                  pageNumber + perPageNumber / 17 + perPageNumber / 17
+                }</span> - <span>${
+            pageNumber +
+            perPageNumber / 17 +
+            perPageNumber / 17 +
+            perPageNumber / 17
+          }</span></button>
+                `;
+        }
+      }
+    }
+  }
+});
+
+//checkbox issues
+const checkboxItems = document.getElementById("checkboxIssues_container");
+checkboxItems.addEventListener("click", (e) => {
+  if (e.target.classList.contains("myissues")) {
+    if (e.target.checked) {
+      e.target.classList.add("clicked");
+      checkboxIssuesContainer = [...new Set(checkboxIssuesContainer)];
+      checkboxIssuesContainer.push(e.target.value);
+     
+      perPageNumber === 17
+        ? showingItems(pageNumber, pageNumber)
+        : showingItems(
+            pageNumber === 1 ? 1 : pageNumber + 1,
+            paginationNumberOfEndPage
+          );
+    } else {
+      e.target.classList.remove("clicked");
+      let index = checkboxIssuesContainer.findIndex(
+        (elem) => elem === e.target.value
+      );
+ 
+      checkboxIssuesContainer.splice(index, 1);
+
+      perPageNumber === 17
+        ? showingItems(pageNumber, pageNumber)
+        : showingItems(
+            pageNumber === 1 ? 1 : pageNumber + 1,
+            paginationNumberOfEndPage
+          );
+    }
+  }
+});
+//checkbox issues you dont want to see
+const checkboxItems2 = document.getElementById("checkboxIssues_container2");
+checkboxItems2.addEventListener("click", (e) => {
+  if (e.target.classList.contains("myissues2")) {
+    if (e.target.checked) {
+      e.target.classList.add("clicked");
+      checkboxIssuesContainer2 = [...new Set(checkboxIssuesContainer2)];
+      checkboxIssuesContainer2.push(e.target.value);
+     
+      perPageNumber === 17
+        ? showingItems(pageNumber, pageNumber)
+        : showingItems(
+            pageNumber === 1 ? 1 : pageNumber + 1,
+            paginationNumberOfEndPage
+          );
+    } else {
+      e.target.classList.remove("clicked");
+      let index = checkboxIssuesContainer2.findIndex(
+        (elem) => elem === e.target.value
+      );
+ 
+      checkboxIssuesContainer2.splice(index, 1);
+
+      perPageNumber === 17
+        ? showingItems(pageNumber, pageNumber)
+        : showingItems(
+            pageNumber === 1 ? 1 : pageNumber + 1,
+            paginationNumberOfEndPage
+          );
+    }
+  }
+});
+//searchInput
+const mySearchBox = document.querySelector("#mySearchBox");
+const inputEL = mySearchBox.querySelector("input");
+const buttonEl = mySearchBox.querySelector("button");
+
+buttonEl.addEventListener("click", (e) => {
+  searchItem = inputEL.value;
+  inputEL.value = "";
+  perPageNumber === 17
+    ? showingItems(pageNumber, pageNumber)
+    : showingItems(
+        pageNumber === 1 ? 1 : pageNumber + 1,
+        paginationNumberOfEndPage
+      );
+});
+
+//Advertising
+const checkbox = document.querySelector(`#myCheckBox`);
+checkbox.addEventListener("change", (e) => {
+  e.target.classList.toggle("checkBox");
+  if (e.target.classList.contains("checkBox")) {
+    [
+      ...document.querySelectorAll(
+        ".scroll-hide, .blogroll-inner-wrapper, #sidebar , .tabliq-468 , .last-topics-wrapper , #kaprila_p30download_ir_related-top-post ,.blogroll , div#lun-notif , .last-topics , .scroll-hide display_none , div#lun-notif.scroll-hide , #content-wrapper>#content>#main-content>h4"
+      ),
+    ].forEach((elem) => elem.classList.add("display_none"));
+    document.getElementById("content").classList.add("contentActive");
+  } else {
+    [
+      ...document.querySelectorAll(
+        ".scroll-hide, .blogroll-inner-wrapper, #sidebar , .tabliq-468 , .last-topics-wrapper , #kaprila_p30download_ir_related-top-post ,.blogroll , div#lun-notif , .last-topics , .scroll-hide display_none , div#lun-notif.scroll-hide"
+      ),
+    ].forEach((elem) => elem.classList.remove("display_none"));
+    document.getElementById("content").classList.remove("contentActive");
+  }
+});
