@@ -206,7 +206,7 @@ async function showingItems(initialPage, howManyPage) {
   let myCheckoxNewArrayIndex2 = 0;
   let myCheckoxNewArray2Length =0
   paginationNumberOfEndPage = perPageNumber/17
-  console.log(checkboxIssuesContainer2);
+  
   document.body.insertAdjacentHTML(
     "beforebegin",
     `
@@ -292,7 +292,7 @@ async function showingItems(initialPage, howManyPage) {
       myCheckoxNewArray = [...new Set(myCheckoxNewArray)];
 
       //stepper
-      console.log(stepperNUmCheckBoxArry , "stepperNUmCheckBoxArry up");
+      
       stepperNUmCheckBoxArry.forEach((elem) => {
         elem.classList.contains("article-wrapper") ? stepperNUmCheckBox++ : "";
         stepperNUmCheckBoxArry.push(elem);
@@ -361,7 +361,7 @@ async function showingItems(initialPage, howManyPage) {
         stepperNUmCheckBoxArry.push(elem);
       });
       stepperNUmCheckBoxArry = [...new Set(stepperNUmCheckBoxArry)];
-      console.log(myCheckoxNewArray2 , "myCheckoxNewArray2");
+      
       
       steps.insertAdjacentHTML(
         "beforeend",

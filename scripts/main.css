@@ -136,8 +136,8 @@
 }
 .sttepper .stteps .sttep{
   
-    width: 30px;
-    height: 30px;
+    width: 35px;
+    height: 35px;
     border-radius: 50%;
     display: flex;
     justify-content: center;
@@ -155,7 +155,7 @@
     width: 3px;
     /* height: 100px; */
     background-color: rgb(25,96,180);
-    transform: translateX(-13px);
+    transform: translateX(-16px);
 }
 .sttepEnd{
     width: 50px;
