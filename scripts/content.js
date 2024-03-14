@@ -64,17 +64,17 @@ myIcon2.innerHTML = `<div id="myIcon2">
   <div id="pagesNum">
      <span style ="font-size: 12px; text-align:end">Choose how many pages you want to see on each page</span>
      <select class="optionsPerPage">
-        <option  value="17" >default</option>
-        <option  value="51">Pages 3 </option>
-        <option  value="102">Pages 6 </option>
-        <option  value="170">Pages 10 </option>
-        <option  value="255">Pages 15 </option>
+        <option  value="17" >default- 1 pages</option>
+        <option  value="51">Pages-3  </option>
+        <option  value="102">6-Pages  </option>
+        <option  value="170">10-Pages  </option>
+        <option  value="255">15-Pages  </option>
       </select>
   </div>
   
   <div id="checkboxIssues_container" style="padding: 5px;border: 1px solid black;">
     <div >
-    <input type="checkbox" id="narmafzar" value="نرم افزا" class="myissues">
+    <input type="checkbox" id="narmafzar" value="نرم افزا"  class="myissues">
     <label for="narmafzar">نرم افزار</label>
     </div>
     <div>
@@ -196,7 +196,7 @@ async function showingItems(initialPage, howManyPage) {
   html = "";
   let stepperNUmCheckBox = 0;
   let stepperNUmCheckBox2 = 0;
-  let stepperNUmCheckBox3 = 0;
+  let stepperNUmCheckBox3 =0
   let stepperNUmCheckBoxArry = [];
   let searchNewData = [];
   let myCheckoxNewArray = [];
@@ -204,9 +204,11 @@ async function showingItems(initialPage, howManyPage) {
   let myCheckoxNewArray3 =[]
   let myCheckoxNewArrayIndex = 0;
   let myCheckoxNewArrayIndex2 = 0;
+  let myCheckoxNewArrayIndex3 = 0;
   let myCheckoxNewArray2Length =0
-  paginationNumberOfEndPage = perPageNumber/17
+ 
   
+
   document.body.insertAdjacentHTML(
     "beforebegin",
     `
@@ -236,6 +238,12 @@ async function showingItems(initialPage, howManyPage) {
       }
     }
   });
+  //landing page
+  const divLanding = document.createElement("div")
+  divLanding.innerHTML="<h1>... PLEASE WAIT</h1>"
+  divLanding.classList.add("landingDiv")
+  document.body.after(divLanding)
+
   const steps = document.querySelector(".stteps");
   const myEnd = document.querySelector(".myEnd");
   steps.innerHTML = "";
@@ -246,6 +254,7 @@ async function showingItems(initialPage, howManyPage) {
     const data = await res.text();
     const parser = new DOMParser();
     const document = parser.parseFromString(data, "text/html");
+    
 
     newData.push(...document.querySelectorAll(".article-wrapper"));
     let xmlString = `<div><div class="pageScrolled"><span>${f}</span> <span>:PAGE</span> </div></div>`;
@@ -254,7 +263,7 @@ async function showingItems(initialPage, howManyPage) {
     newData.push(doc.querySelector("body").querySelector("div"));
     //stepper
 
-    if (!checkboxIssuesContainer.length > 0 && !checkboxIssuesContainer2.length > 0) {
+    if (!checkboxIssuesContainer.length > 0 && !checkboxIssuesContainer2.length > 0 && searchItem === "") {
       steps.insertAdjacentHTML(
         "beforeend",
         `
@@ -283,14 +292,16 @@ async function showingItems(initialPage, howManyPage) {
           ) {
             myCheckoxNewArray.push(elem);
             stepperNUmCheckBoxArry.push(elem);
+            
           }
           if (elem.classList.contains(`doc${f}`)) {
             myCheckoxNewArray.push(elem);
           }
         });
       }
+      
+   
       myCheckoxNewArray = [...new Set(myCheckoxNewArray)];
-
       //stepper
       
       stepperNUmCheckBoxArry.forEach((elem) => {
@@ -321,7 +332,8 @@ async function showingItems(initialPage, howManyPage) {
       stepperNUmCheckBox2 = stepperNUmCheckBox;
       stepperNUmCheckBoxArry = [];
       stepperNUmCheckBox = 0;
-      newData = myCheckoxNewArray
+      
+     
     }
     //if we want to remove special item
     if (checkboxIssuesContainer2.length > 0 && !checkboxIssuesContainer.length > 0) {
@@ -349,9 +361,6 @@ async function showingItems(initialPage, howManyPage) {
        
         myCheckoxNewArray2 =myCheckoxNewArray3
       }
-     
-
-
       myCheckoxNewArray2 = [...new Set(myCheckoxNewArray2)];
 
       //stepper
@@ -386,24 +395,158 @@ async function showingItems(initialPage, howManyPage) {
       stepperNUmCheckBox3 = stepperNUmCheckBox;
       stepperNUmCheckBoxArry = [];
       stepperNUmCheckBox3 = 0;
-      newData = myCheckoxNewArray2
+      
     }
     //if we had a search item
-    if (searchItem != "") {
+    if (searchItem !== ""&& !myCheckoxNewArray2.length > 0 && !myCheckoxNewArray.length > 0) {
+     
       newData.forEach((elem) => {
         if (elem.textContent.includes(searchItem)) {
           searchNewData.push(elem);
+          stepperNUmCheckBoxArry.push(elem);
         }
+        if (elem.innerHTML.includes(`PAGE`)) {
+          
+          searchNewData.push(elem);
+         
+        }
+        
         searchNewData = [...new Set(searchNewData)];
       });
-      newData = searchNewData
+         //stepper
+      
+         stepperNUmCheckBoxArry.forEach((elem) => {
+          elem.classList.contains("article-wrapper") ? stepperNUmCheckBox++ : "";
+          stepperNUmCheckBoxArry.push(elem);
+        });
+        stepperNUmCheckBoxArry = [...new Set(stepperNUmCheckBoxArry)];
+        steps.insertAdjacentHTML(
+          "beforeend",
+          `
+          <div class="myStteps" >
+              <div class="sttep acttive" >${f}</div>
+              <div class="linee" style="height: ${
+                ((stepperNUmCheckBox - stepperNUmCheckBox2) * 280) / perPageNumber
+              }px; "></div>
+            </div>
+          `
+        );
+  
+        if (myCheckoxNewArrayIndex3 + 1 >= searchNewData.length) {
+          const emptyString = `<div>"we did not find any articles on this page"</div>`;
+          let doc = new DOMParser().parseFromString(emptyString, "text/html");
+          const index = myCheckoxNewArrayIndex3;
+          searchNewData.splice(index, 0, doc.querySelector("div"));
+        }
+  
+        myCheckoxNewArrayIndex3 = searchNewData.length;
+        stepperNUmCheckBox2 = stepperNUmCheckBox;
+        stepperNUmCheckBoxArry = [];
+        stepperNUmCheckBox = 0;
+    }
+    
+  }
+  
+  searchItem !== ""&& !myCheckoxNewArray2.length > 0 && !myCheckoxNewArray.length > 0  ? (newData = searchNewData) : "";
+  
+  if(myCheckoxNewArray.length > 0){
+    newData = myCheckoxNewArray;
+    if(searchItem != ""){
+      
+      newData.forEach((elem) => {
+        if (elem.textContent.includes(searchItem)) {
+          searchNewData.push(elem);
+          stepperNUmCheckBoxArry.push(elem);
+        }
+        if (elem.innerHTML.includes(`PAGE`)) {
+          
+          searchNewData.push(elem);
+         
+        }
+        
+        searchNewData = [...new Set(searchNewData)];
+      });
+         //stepper
+      
+         stepperNUmCheckBoxArry.forEach((elem) => {
+          elem.classList.contains("article-wrapper") ? stepperNUmCheckBox++ : "";
+          stepperNUmCheckBoxArry.push(elem);
+        });
+        stepperNUmCheckBoxArry = [...new Set(stepperNUmCheckBoxArry)];
+        steps.insertAdjacentHTML(
+          "beforeend",
+          `
+          <div class="myStteps" >
+              <div class="sttep acttive" >${f}</div>
+              <div class="linee" style="height: ${
+                ((stepperNUmCheckBox - stepperNUmCheckBox2) * 280) / perPageNumber
+              }px; "></div>
+            </div>
+          `
+        );
+  
+        if (myCheckoxNewArrayIndex3 + 1 >= searchNewData.length) {
+          const emptyString = `<div>"we did not find any articles on this page"</div>`;
+          let doc = new DOMParser().parseFromString(emptyString, "text/html");
+          const index = myCheckoxNewArrayIndex3;
+          searchNewData.splice(index, 0, doc.querySelector("div"));
+        }
+  
+        myCheckoxNewArrayIndex3 = searchNewData.length;
+        stepperNUmCheckBox2 = stepperNUmCheckBox;
+        stepperNUmCheckBoxArry = [];
+        stepperNUmCheckBox = 0;
     }
   }
-
-  // searchItem !== "" ? (newData = searchNewData) : "";
-  // myCheckoxNewArray.length > 0 ? (newData = myCheckoxNewArray) : "";
-  // myCheckoxNewArray2.length > 0 ? (newData = myCheckoxNewArray2) : "";
-
+  
+  if(myCheckoxNewArray2.length > 0){
+    newData = myCheckoxNewArray2
+    if(searchItem != ""){
+      newData.forEach((elem) => {
+        if (elem.textContent.includes(searchItem)) {
+          searchNewData.push(elem);
+          stepperNUmCheckBoxArry.push(elem);
+        }
+        if (elem.innerHTML.includes(`PAGE`)) {
+          
+          searchNewData.push(elem);
+         
+        }
+        
+        searchNewData = [...new Set(searchNewData)];
+      });
+         //stepper
+      
+         stepperNUmCheckBoxArry.forEach((elem) => {
+          elem.classList.contains("article-wrapper") ? stepperNUmCheckBox++ : "";
+          stepperNUmCheckBoxArry.push(elem);
+        });
+        stepperNUmCheckBoxArry = [...new Set(stepperNUmCheckBoxArry)];
+        steps.insertAdjacentHTML(
+          "beforeend",
+          `
+          <div class="myStteps" >
+              <div class="sttep acttive" >${f}</div>
+              <div class="linee" style="height: ${
+                ((stepperNUmCheckBox - stepperNUmCheckBox2) * 280) / perPageNumber
+              }px; "></div>
+            </div>
+          `
+        );
+  
+        if (myCheckoxNewArrayIndex3 + 1 >= searchNewData.length) {
+          const emptyString = `<div>"we did not find any articles on this page"</div>`;
+          let doc = new DOMParser().parseFromString(emptyString, "text/html");
+          const index = myCheckoxNewArrayIndex3;
+          searchNewData.splice(index, 0, doc.querySelector("div"));
+        }
+  
+        myCheckoxNewArrayIndex3 = searchNewData.length;
+        stepperNUmCheckBox2 = stepperNUmCheckBox;
+        stepperNUmCheckBoxArry = [];
+        stepperNUmCheckBox = 0;
+    }
+  }
   newData.forEach((elem) => {
     html += elem.innerHTML;
   });
@@ -430,6 +573,7 @@ async function showingItems(initialPage, howManyPage) {
   createResult.innerHTML = `<span> articles</span>${pageScrollNum} `;
   createResult.classList.add("createResult");
   createItems.before(createResult);
+  divLanding.remove()
 }
 
 //optionsPerPage
@@ -663,6 +807,7 @@ paginationSticyEl.addEventListener("click", (e) => {
       );
       paginationNumberOfEndPage = +e.target.querySelector("span:nth-of-type(2)")
         .innerHTML;
+        
       if (pageNumber <= (perPageNumber * 2) / 17) {
         if (pageNumber === 1) {
           paginationSticyEl.innerHTML = `
@@ -866,6 +1011,8 @@ paginationSticyEl.addEventListener("click", (e) => {
 //checkbox issues
 const checkboxItems = document.getElementById("checkboxIssues_container");
 checkboxItems.addEventListener("click", (e) => {
+  
+  paginationNumberOfEndPage ===1 ?paginationNumberOfEndPage=perPageNumber/17 :""
   if (e.target.classList.contains("myissues")) {
     if (e.target.checked) {
       e.target.classList.add("clicked");
@@ -898,6 +1045,8 @@ checkboxItems.addEventListener("click", (e) => {
 //checkbox issues you dont want to see
 const checkboxItems2 = document.getElementById("checkboxIssues_container2");
 checkboxItems2.addEventListener("click", (e) => {
+ 
+  paginationNumberOfEndPage ===1 ?paginationNumberOfEndPage=perPageNumber/17 :""
   if (e.target.classList.contains("myissues2")) {
     if (e.target.checked) {
       e.target.classList.add("clicked");
@@ -933,6 +1082,9 @@ const inputEL = mySearchBox.querySelector("input");
 const buttonEl = mySearchBox.querySelector("button");
 
 buttonEl.addEventListener("click", (e) => {
+  paginationNumberOfEndPage ===1 ?paginationNumberOfEndPage=perPageNumber/17 :""
+ 
+  
   searchItem = inputEL.value;
   inputEL.value = "";
   perPageNumber === 17
