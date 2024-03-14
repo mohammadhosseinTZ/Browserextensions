@@ -299,12 +299,13 @@ async function showingItems(initialPage, howManyPage) {
             myCheckoxNewArray.push(elem);
           }
         });
+      
       }
       
-   
+      
       myCheckoxNewArray = [...new Set(myCheckoxNewArray)];
       if(searchItem !==""){
-        
+        stepperNUmCheckBoxArry =[]
         myCheckoxNewArray.forEach((elem) => {
           if (elem.textContent.includes(searchItem)) {
             searchNewData.push(elem);
@@ -317,8 +318,9 @@ async function showingItems(initialPage, howManyPage) {
           }
           
           searchNewData = [...new Set(searchNewData)];
-          // myCheckoxNewArray = searchNewData
+          
         });
+        
       }
       //stepper
       
@@ -373,7 +375,7 @@ async function showingItems(initialPage, howManyPage) {
           if (elem.innerHTML.includes(`PAGE`)) {
           
             myCheckoxNewArray3.push(elem);
-           
+            stepperNUmCheckBoxArry.push(elem)
           }
         })
        
@@ -381,7 +383,7 @@ async function showingItems(initialPage, howManyPage) {
       }
       myCheckoxNewArray2 = [...new Set(myCheckoxNewArray2)];
       if(searchItem !==""){
-       
+        stepperNUmCheckBoxArry =[]
         myCheckoxNewArray2.forEach((elem) => {
           if (elem.textContent.includes(searchItem)) {
             searchNewData.push(elem);
